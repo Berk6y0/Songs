@@ -1,0 +1,78 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package song;
+
+/**
+ *
+ * @author Berkay BADANOZ
+ */
+  class Song<Item> {
+
+        @Override
+        public String toString() {
+            return "Song{" + "songName=" + songName + ", Artist=" + Artist + ", ID=" + ID + ", Genre=" + Genre + ", Year=" + Year + '}';
+        }
+
+       private String songName;
+       private String Artist;
+         private int ID;
+        private String Genre;
+        private int Year;
+       public int index;
+
+    public String getSongName() {
+        return songName;
+    }
+
+    public void setSongName(String songName) {
+        this.songName = songName;
+    }
+
+    public String getArtist() {
+        return Artist;
+    }
+
+    public void setArtist(String Artist) {
+        this.Artist = Artist;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public String getGenre() {
+        return Genre;
+    }
+
+    public void setGenre(String Genre) {
+        this.Genre = Genre;
+    }
+
+    public int getYear() {
+        return Year;
+    }
+
+    public void setYear(int Year) {
+        this.Year = Year;
+    }
+     
+       
+     
+
+        public Song(String songName, String Artist, int ID, String Genre, int year) {
+            this.songName = songName;
+            this.Artist = Artist;
+            this.ID = ID;
+            this.Genre = Genre;
+            this.Year = year;
+        }
+
+     
+    }
