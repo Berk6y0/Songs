@@ -1,0 +1,567 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package song;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Scanner;
+
+public class SongTree<Item> {
+
+    public static ArrayList<Song> SongList = new ArrayList<Song>();
+   public Node focus;
+
+    public SongTree() {
+        this.focus = focus;
+    }
+
+  
+
+    public int height(Node<Item> d) {
+        if (d == null) {
+            return 0;
+        } else {
+            return d.height;
+        }
+
+    }
+
+    public Node<Item> rotateRight(Node<Item> focus) {
+        Node<Item> k = focus.left;
+        focus.left = k.right;
+        k.right = focus;
+        focus.height = Math.max(height(focus.left), height(focus.right)) + 1;
+        k.height = Math.max(height(k.left), height(k.right)) + 1;
+        return k;
+    }
+
+    //rotate focus left, replace it with right child(Left Rotate)
+    public Node<Item> rotateLeft(Node<Item> focus) {
+        Node<Item> k = focus.right;
+        focus.right = k.left;
+        k.left = focus;
+        focus.height = Math.max(height(focus.left), height(focus.right)) + 1;
+        k.height = Math.max(height(k.left), height(k.right)) + 1;
+        return k;
+    }
+
+    public Node<Item> doubleRotateRight(Node focus) {
+        focus.left = rotateLeft(focus.left);
+        return rotateRight(focus);
+    }
+
+    public Node<Item> doubleRotateLeft(Node focus) {
+        focus.right = rotateRight(focus.right);
+        return rotateLeft(focus);
+    }
+
+    // Get Balance factor of node focus
+    int getBalance(Node<Item> focus) {
+        if (focus == null) {
+            return 0;
+        }
+
+        return height(focus.left) - height(focus.right);
+    }
+
+    Node minValueNode(Node node) {
+        Node current = node;
+
+        /* loop down to find the leftmost leaf */
+        while (current.left != null) {
+            current = current.left;
+        }
+
+        return current;
+    }
+
+    public Node<Item> insert(Node focus, int index, Item key) {
+        if (focus == null) {
+            return new Node(index, key);
+        }
+        if (index < focus.index) {
+            focus.left = insert(focus.left, index, key);
+
+        } else if (index > focus.index) {
+            focus.right = insert(focus.right, index, key);
+        } else {
+            return focus;
+        }
+        focus.height = Math.max(height(focus.left), height(focus.right)) + 1;
+        int balance = getBalance(focus);
+
+        if (balance > 1 && index < focus.left.index) {
+            return rotateRight(focus);
+        }
+
+        // Right Right Case
+        if (balance < -1 && index > focus.right.index) {
+            return rotateLeft(focus);
+        }
+
+        // Left Right Case
+        if (balance > 1 && index > focus.left.index) {
+            focus.left = rotateLeft(focus.left);
+            return rotateRight(focus);
+        }
+
+        // Right Left Case
+        if (balance < -1 && index < focus.right.index) {
+            focus.right = rotateRight(focus.right);
+            return rotateLeft(focus);
+        }
+
+        return focus;
+    }
+
+    public void insert(int index, Item key) {
+        this.focus = insert(this.focus, index, key);
+    }
+
+    void printPreorder(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        /* first print data of node */
+        System.out.print(node.key + " ");
+
+        /* then recur on left subtree */
+        printPreorder(node.left);
+
+        /* now recur on right subtree */
+        printPreorder(node.right);
+    }
+
+
+
+   
+    public int Search1(Node focus, Item Key)  {
+
+        Node a = focus;
+        Node b = focus;
+        Node c = focus;
+        if (a.key.equals(Key)) {
+            return a.index;
+        }
+        for (int i = 0; i < SongList.size(); i++) {
+
+            if (a.left != null) {
+                a = a.left;
+                b = a.left;
+                c = a.left;
+            }
+
+            if (a.key.equals(Key)) {
+                return a.index;
+            }
+            while (a.right != null && a.left != null) {
+                if (a.key.equals(Key)) {
+                    return a.index;
+                }
+                if (a.right != null) {
+                    a = a.right;
+                    if (a.key.equals(Key)) {
+                        return a.index;
+                    }
+                    if (!a.key.equals(Key)) {
+                        a = c;
+                    }
+                    if (a.key.equals(Key)) {
+                        return a.index;
+                    }
+                    if (a.left != null) {
+                        a = a.left;
+                        if (a.key.equals(Key)) {
+                            return a.index;
+                        }
+                    }
+
+                }
+
+            }
+            if (a.left == null && a.right == null) {
+                if (a.key.equals(Key)) {
+                    return a.index;
+                }
+            }
+            a = b;
+        }
+        if (a.left == null) {
+            a = focus;
+        }
+
+        for (int j = 0; j < SongList.size(); j++) {
+
+            if (a.right != null) {
+                a = a.right;
+                b = a.right;
+                c = a.right;
+            }
+            if (a.key.equals(Key)) {
+                return a.index;
+            }
+
+            while (a.left != null && a.right != null) {
+                if (a.key.equals(Key)) {
+                    return a.index;
+                }
+                if (a.left != null) {
+                    a = a.left;
+                    if (a.key.equals(Key)) {
+                        return a.index;
+                    }
+                    if (!a.key.equals(Key)) {
+                        a = c;
+                    }
+                    if (a.key.equals(Key)) {
+                        return a.index;
+                    }
+                    if (a.right != null) {
+                        a = a.right;
+                        if (a.key.equals(Key)) {
+                            return a.index;
+                        }
+                        if (!a.key.equals(Key)) {
+                            a = c.left;
+                        }
+
+                    }
+                }
+            }
+            if (a.left == null && a.right == null) {
+                if (a.key.equals(Key)) {
+                    return a.index;
+                }
+            }
+            a = b;
+        }
+
+        return -1;
+
+      
+    }
+
+    public void Search3(Node focus, int s1, int s2) {
+
+        if (focus == null) {
+            return;
+        }
+        if (s1 <(Integer) focus.key) {
+            Search3(focus.left, s1, s2);
+        }
+        if (s1 <= (Integer) focus.key && s2 >= (Integer) focus.key) {
+            System.out.println(SongList.get(Search1(focus,(Item)(Integer)focus.key)));
+        }
+        Search3(focus.right, s1, s2);
+
+    }
+
+    public void traverseInOrder(Node focus) {
+        if (focus.left != null) {
+            traverseInOrder(focus.left);
+        }
+        System.out.println(focus.toString());
+        if (focus.right != null) {
+            traverseInOrder(focus.right);
+        }
+    }
+
+    Node<Item> deleteNode(Node focus, int ID) {
+        // STEP 1: PERFORM STANDARD BST DELETE 
+        if (focus == null) {
+            return focus;
+        }
+
+        // If the key to be deleted is smaller than 
+        // the root's key, then it lies in left subtree 
+        if (ID < (Integer) focus.key) {
+            focus.left = deleteNode(focus.left, ID);
+        } // If the key to be deleted is greater than the 
+        // root's key, then it lies in right subtree 
+        else if (ID == (Integer) focus.key) {
+
+            // node with only one child or no child 
+            if ((focus.left == null) || (focus.right == null)) {
+                Node temp = null;
+                if (focus.left == null) {
+                    temp = focus.right;
+                } else { // null == focus.right
+                    temp = focus.left;
+                }
+                // No child case 
+                if (temp == null) {
+                    temp = focus;
+                    focus = null;
+                } else // One child case 
+                {
+                    focus = temp; // Copy the contents of 
+                }                                // the non-empty child 
+            } else {
+
+                // node with two children: Get the inorder 
+                // successor (smallest in the right subtree) 
+                Node temp = minValueNode(focus.right);
+
+                // Copy the inorder successor's data to this node
+                focus.key = temp.key;
+                focus.index = temp.index;
+                // Delete the inorder successor 
+                focus.right = deleteNode(focus.right, (Integer) temp.key);
+            }
+        } else if (ID > (Integer) focus.key) {
+            focus.right = deleteNode(focus.right, ID);
+        } // if key is same as root's key, then this is the node 
+        // to be deleted 
+
+        // If the tree had only one node then return 
+        if (focus == null) {
+            return focus;
+        }
+
+        // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE 
+        focus.height = Math.max(height(focus.left), height(focus.right)) + 1;
+
+        // STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to check whether 
+        // this node became unbalanced) 
+        int balance = getBalance(focus);
+
+        // If this node becomes unbalanced, then there are 4 cases 
+        // Left Left Case 
+        if (balance > 1 && getBalance(focus.left) >= 0) {
+            return rotateRight(focus);
+        }
+
+        // Left Right Case 
+        if (balance > 1 && getBalance(focus.left) < 0) {
+            focus.left = rotateLeft(focus.left);
+            return rotateRight(focus);
+        }
+
+        // Right Right Case 
+        if (balance < -1 && getBalance(focus.right) <= 0) {
+            return rotateLeft(focus);
+        }
+
+        // Right Left Case 
+        if (balance < -1 && getBalance(focus.right) > 0) {
+            focus.right = rotateRight(focus.right);
+            return rotateLeft(focus);
+        }
+
+        return focus;
+    }
+    Node<Item> deleteNodeİ(Node focus, int i) {
+        // STEP 1: PERFORM STANDARD BST DELETE 
+        if (focus == null) {
+            return focus;
+        }
+
+        // If the key to be deleted is smaller than 
+        // the root's key, then it lies in left subtree 
+        if ( i< focus.index) {
+            focus.left = deleteNodeİ(focus.left, i);
+        } // If the key to be deleted is greater than the 
+        // root's key, then it lies in right subtree 
+        else if (i == focus.index) {
+
+            // node with only one child or no child 
+            if ((focus.left == null) || (focus.right == null)) {
+                Node temp = null;
+                if (focus.left == null) {
+                    temp = focus.right;
+                } else { // null == focus.right
+                    temp = focus.left;
+                }
+                // No child case 
+                if (temp == null) {
+                    temp = focus;
+                    focus = null;
+                } else // One child case 
+                {
+                    focus = temp; // Copy the contents of 
+                }                                // the non-empty child 
+            } else {
+
+                // node with two children: Get the inorder 
+                // successor (smallest in the right subtree) 
+                Node temp = minValueNode(focus.right);
+
+                // Copy the inorder successor's data to this node
+                
+                focus.index = temp.index;
+
+                // Delete the inorder successor 
+                focus.right = deleteNodeİ(focus.right, i);
+            }
+        } else if (i > focus.index) {
+            focus.right = deleteNodeİ(focus.right, i);
+        } // if key is same as root's key, then this is the node 
+        // to be deleted 
+
+        // If the tree had only one node then return 
+        if (focus == null) {
+            return focus;
+        }
+
+        // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE 
+        focus.height = Math.max(height(focus.left), height(focus.right)) + 1;
+
+        // STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to check whether 
+        // this node became unbalanced) 
+        int balance = getBalance(focus);
+
+        // If this node becomes unbalanced, then there are 4 cases 
+        // Left Left Case 
+        if (balance > 1 && getBalance(focus.left) >= 0) {
+            return rotateRight(focus);
+        }
+
+        // Left Right Case 
+        if (balance > 1 && getBalance(focus.left) < 0) {
+            focus.left = rotateLeft(focus.left);
+            return rotateRight(focus);
+        }
+
+        // Right Right Case 
+        if (balance < -1 && getBalance(focus.right) <= 0) {
+            return rotateLeft(focus);
+        }
+
+        // Right Left Case 
+        if (balance < -1 && getBalance(focus.right) > 0) {
+            focus.right = rotateRight(focus.right);
+            return rotateLeft(focus);
+        }
+
+        return focus;
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+        File songs = new File("D:\\Songs.txt");
+        Scanner scsongs = new Scanner(songs);
+        SongTree a = new SongTree();
+        SongTree b = new SongTree();
+        SongTree c = new SongTree();
+        while (scsongs.hasNextLine()) {
+            String line = scsongs.nextLine();
+            String[] splited = line.split(";");
+
+            String name = splited[0];
+            String artist = splited[1];
+            int ID = Integer.parseInt(splited[2]);
+            String genre = splited[3];
+            int year = Integer.parseInt(splited[4]);
+            Song k = new Song(name, artist, ID, genre, year);
+            SongList.add(k);
+        }
+        for (int i = 0; i < SongList.size(); i++) {
+            a.insert(i, SongList.get(i).getID());
+            b.insert(i, SongList.get(i).getSongName());
+            c.insert(i, SongList.get(i).getArtist());
+          
+        }
+      
+        
+      
+////  case 4
+////Scanner ao=new Scanner(System.in);
+////int IDT=ao.nextInt(); Delete i de ayrı biçimde  çalışıyor Delete e de fakat birleşik olarak çalışmıyor
+////System.out.println(a.Search1(a.focus,IDT));
+//b.deleteNodeİ(b.focus, 8);
+//b.traverseInOrder(b.focus);
+
+
+
+
+
+
+
+
+
+        String menu = "(Press 1)Display SongList\n"
+                + "(Press 2) Search by ID range\n"
+                + "(Press 3)Search by ID number, artist and music name\n"
+                + "(Press 4)Delete from all trees\n"
+                + "(Press 5) Exit the System\n";
+        Scanner sc = new Scanner(System.in);
+        System.out.println(menu);
+        int u = 0;
+        while (u != 5) {
+            u = sc.nextInt();
+            switch (u) {
+                case 1:
+                    System.out.println("The SongList :");
+                    for (int i = 0; i < SongList.size(); i++) {
+                        System.out.println(SongList.get(i));
+
+                    }
+                    System.out.println(menu);
+                    break;
+                case 2:
+                    System.out.println("Please enter the lower bound");
+                    int q = sc.nextInt();
+                    System.out.println("Please enter the upper bound");
+                    int s = sc.nextInt();
+                    a.Search3(a.focus, q, s);
+                    break;
+
+                case 3:
+
+                    System.out.println("Which key would you like to search with? 1)ID\n"
+                            + "2)Songname\n"
+                            + "3) Artist");
+                    int k = sc.nextInt();
+                    switch (k) {
+                        case 1:
+                            System.out.println("Please enter the ID are you looking for");
+                            int x = sc.nextInt();
+                            if(a.Search1(a.focus, x)==-1){System.out.println("This ID is not available in the song tree.");}else{
+                            System.out.println(SongList.get(a.Search1(a.focus, x)));}
+                            break;
+                        case 2:
+                            System.out.println("Please enter the Songname");
+                            Object y = sc.next();
+                               if(b.Search1(b.focus, y)==-1){System.out.println("This Songname is not available in the song tree.");}else{
+                            System.out.println(SongList.get(b.Search1(b.focus, y)));}
+                            break;
+                        case 3:
+                            System.out.println("Please enter the Artist");
+                            Object m = sc.next();
+                               if(c.Search1(c.focus, m)==-1){System.out.println("This Artist is not available in the song tree.");}else{
+                            System.out.println(SongList.get(c.Search1(c.focus, m)));}
+                            break;
+                        default:
+                    }
+
+                    break;
+                case 4:
+                    System.out.println("Please Enter the ID for deletion");
+                     int IDT = sc.nextInt();
+                    a.deleteNode(a.focus,IDT);
+                   
+                    b.deleteNodeİ(b.focus,a.Search1(a.focus,IDT));
+                    c.deleteNodeİ(c.focus, a.Search1(a.focus,IDT));
+                    System.out.println("ID Tree");
+                    a.traverseInOrder(a.focus);
+                     System.out.println("SongName Tree");
+                    b.traverseInOrder(b.focus);
+                     System.out.println("Artist Tree");
+                    c.traverseInOrder(c.focus);
+                    break;
+
+            }
+            if (u == 5) {
+                System.out.println("Exiting the program ….");
+
+            }
+
+        }
+
+    }
+}
