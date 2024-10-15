@@ -1,0 +1,68 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package song;
+
+/**
+ *
+ * @author Berkay BADANOZ
+ */
+public class Node<Item> {
+    
+       public Node left;
+        public Node right;
+        public int height;
+           public Item key;
+
+    public Node getLeft() {
+        return left;
+    }
+
+    public void setLeft(Node left) {
+        this.left = left;
+    }
+
+    public Node getRight() {
+        return right;
+    }
+
+    public void setRight(Node right) {
+        this.right = right;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public Item getKey() {
+        return key;
+    }
+
+    public void setKey(Item key) {
+        this.key = key;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" + "key=" + key + ", index=" + index + '}';
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+           public int index;
+              public Node(int index, Item key) {
+            this.index = index;
+            this.key = key;
+        }
+}
